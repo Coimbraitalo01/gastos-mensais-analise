@@ -1,12 +1,44 @@
-export default function ExpenseList({ expenses, onRemove, loading }) {
+import { useState } from 'react'
+import { Trash2, Check, X } from 'react-feather'
+
+export default function ExpenseList({ expenses, onRemove, loading, activeFilter = 'todas' }) {
+  const [confirmDelete, setConfirmDelete] = useState(null)
+  const [hoveredItem, setHoveredItem] = useState(null)
+
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('pt-BR')
+    const options = { day: '2-digit', month: 'short' }
+    return new Date(dateString).toLocaleDateString('pt-BR', options)
+  }
+
+  const handleRemove = (id) => {
+    setConfirmDelete(id)
+  }
+
+  const confirmRemove = (id) => {
+    onRemove(id)
+    setConfirmDelete(null)
+    setHoveredItem(null)
+  }
+
+  const cancelRemove = () => {
+    setConfirmDelete(null)
+    setHoveredItem(null)
+  }
+
+  // Estilos dinâmicos
+  const categoryColors = {
+    alimentacao: 'bg-green-100 text-green-800',
+    transporte: 'bg-blue-100 text-blue-800',
+    lazer: 'bg-purple-100 text-purple-800',
+    moradia: 'bg-yellow-100 text-yellow-800',
+    educacao: 'bg-red-100 text-red-800'
   }
 
   if (loading && expenses.length === 0) {
     return (
       <div className="p-8 text-center text-gray-500">
-        Carregando...
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mx-auto mb-2"></div>
+        Carregando despesas...
       </div>
     )
   }
@@ -14,39 +46,64 @@ export default function ExpenseList({ expenses, onRemove, loading }) {
   if (expenses.length === 0) {
     return (
       <div className="p-8 text-center text-gray-500">
-        Nenhuma despesa registrada ainda
+        {activeFilter === 'todas' 
+          ? 'Nenhuma despesa registrada ainda' 
+          : 'Nenhuma despesa encontrada para esta categoria'}
+        <p className="text-sm mt-2 text-gray-400">Clique no botão "+" para adicionar</p>
       </div>
     )
   }
 
   return (
-    <div className="divide-y">
+    <div className="divide-y divide-gray-100">
       {expenses.map((expense) => (
         <div 
           key={expense.id} 
-          className="p-4 hover:bg-gray-50 transition flex justify-between items-center"
+          className="p-4 hover:bg-gray-50 transition flex justify-between items-center relative"
+          onMouseEnter={() => setHoveredItem(expense.id)}
+          onMouseLeave={() => !confirmDelete && setHoveredItem(null)}
         >
-          <div>
-            <h3 className="font-medium">{expense.description}</h3>
-            <div className="flex gap-2 text-sm text-gray-500">
-              <span className="capitalize">{expense.category}</span>
-              <span>•</span>
-              <span>{formatDate(expense.date)}</span>
+          <div className="flex-1 min-w-0 pr-4">
+            <h3 className="font-medium truncate text-gray-800">{expense.description}</h3>
+            <div className="flex gap-2 items-center mt-1.5">
+              <span className={`${categoryColors[expense.category] || 'bg-gray-100 text-gray-800'} px-2 py-0.5 rounded-full text-xs capitalize`}>
+                {expense.category}
+              </span>
+              <span className="text-xs text-gray-400">{formatDate(expense.date)}</span>
             </div>
           </div>
+          
           <div className="flex items-center gap-4">
             <span className="text-red-500 font-medium whitespace-nowrap">
-              R$ {expense.amount.toFixed(2)}
+              - R$ {expense.amount.toFixed(2)}
             </span>
-            <button
-              onClick={() => onRemove(expense.id)}
-              className="text-gray-400 hover:text-red-500 transition"
-              title="Remover"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
-            </button>
+            
+            {confirmDelete === expense.id ? (
+              <div className="flex gap-2 bg-white rounded-lg p-1 shadow-sm absolute right-4 top-1/2 transform -translate-y-1/2">
+                <button
+                  onClick={() => confirmRemove(expense.id)}
+                  className="p-1 text-green-500 hover:bg-green-50 rounded"
+                  title="Confirmar"
+                >
+                  <Check size={16} />
+                </button>
+                <button
+                  onClick={cancelRemove}
+                  className="p-1 text-gray-500 hover:bg-gray-50 rounded"
+                  title="Cancelar"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => handleRemove(expense.id)}
+                className={`p-1 rounded transition ${hoveredItem === expense.id ? 'text-red-500 bg-red-50' : 'text-gray-400'}`}
+                title="Remover"
+              >
+                <Trash2 size={16} />
+              </button>
+            )}
           </div>
         </div>
       ))}
