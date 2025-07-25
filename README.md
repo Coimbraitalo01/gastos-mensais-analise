@@ -1,6 +1,9 @@
 # 💸 Controle de Gastos
 
-Aplicação web desenvolvida com **React + TailwindCSS** para ajudar usuários a acompanhar seus gastos mensais de forma simples, rápida e visual. O app foi inspirado em uma identidade visual elegante e escura, similar à de plataformas como o BTG Pactual.
+Aplicação web desenvolvida com **React + TailwindCSS** para ajudar usuários a acompanhar seus gastos mensais de forma simples, rápida e visual. O app foi inspirado em uma identidade visual elegante e escura.
+## 📸 Preview
+
+![Preview do Projeto](https://github.com/Coimbraitalo01/gastos-mensais-analise/raw/main/Preview.png)
 
 ---
 
@@ -42,10 +45,6 @@ Copiar
 Editar
 npm run dev
 Acesse em http://localhost:5173
-
-## 📸 Preview
-
-![Preview do Projeto](https://github.com/Coimbraitalo01/gastos-mensais-analise/raw/main/Preview.png)
 
 🔗 Conecte-se comigo
 Confira meus outros projetos e contribuições:
