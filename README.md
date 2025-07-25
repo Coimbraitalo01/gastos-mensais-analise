@@ -43,8 +43,9 @@ Editar
 npm run dev
 Acesse em http://localhost:5173
 
-📸 Preview
-https://github.com/Coimbraitalo01/gastos-mensais-analise/blob/main/Preview.png
+## 📸 Preview
+
+![Preview do Projeto](https://github.com/Coimbraitalo01/gastos-mensais-analise/raw/main/Preview.png)
 
 🔗 Conecte-se comigo
 Confira meus outros projetos e contribuições:
